@@ -1,14 +1,16 @@
 
 # -*- coding: utf-8 -*-
+
+# --------------- IMPORT ALL MODULES ------------------------------------------
+
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn import linear_model
 
+# --------------- USER INTERFACE ----------------------------------------------
 
 root = tk.Tk()
 root.title( "Yüksek Öğrenim Sıralama    " )
@@ -71,8 +73,11 @@ dersSaati_edit.config(font="bold")
 dersSaati_edit.insert(END,"")
 
 
+# ------------------- MAIN FUNCTION -------------------------------------------
 
-def Hesapla():
+def Calculate():
+
+    # --------------- GET USER'S DATA FROM INTERFACE --------------------------
 
     konumPuanı = int(konumPuanı_edit.get())
     yayinSayisi = int(akademikYayinSayisi_edit.get())
@@ -80,19 +85,38 @@ def Hesapla():
     ogrenciSeviyesi = int(ogrenciSeviyesi_edit.get())
     dersSaati = int(dersSaati_edit.get())
     
-    dt=pd.read_csv("data.csv")
-    print(dt)
+    # --------------- GET MAIN DATA FROM CSV FILE -----------------------------
+
+    mainData = pd.read_csv("data.csv")
+
+    # --------------- CALL RIDGE REGRESSION -----------------------------------
+
     reg = linear_model.Ridge()
-    reg.fit(dt[["Konum","AkademikYayinSayisi","AkademikYayinDerecesi","OgrenciSeviyesi","DersSaati"]],dt.sr)
-    sonuc=int(reg.predict([[konumPuanı,yayinSayisi,yayinDerecesi,ogrenciSeviyesi,dersSaati]]))
-    tk.messagebox.showinfo("\n TAHMİNİ SIRALAMA :" , sonuc)
 
+    # --------------- MENTION FEATURES AND RESULT ATTRIBUTE -------------------
 
+    features = mainData[["Konum", "AkademikYayinSayisi", "AkademikYayinDerecesi", "OgrenciSeviyesi", "DersSaati"]]
+    resultAttribute = mainData.sr
 
-controlButton = Button(root,text="HESAPLA",width=20,command=Hesapla)
+    # --------------- FITTING OPERATION WITH FEATURES AND RESULT ATTRIBUTE ----
+
+    reg.fit(features, resultAttribute)
+
+    # --------------- PREDICT OPERATION ---------------------------------------
+
+    testAttributes = [[konumPuanı, yayinSayisi, yayinDerecesi, ogrenciSeviyesi, dersSaati]]
+    predictResult = reg.predict(testAttributes)
+    lastResult = int(predictResult)
+
+    # --------------- SHOW RESULT ---------------------------------------------
+
+    tk.messagebox.showinfo("\n TAHMİNİ SIRA" , lastResult)
+
+    # --------------- RUN CALCULATER WHEN BUTTON CLICKED ----------------------
+
+controlButton = Button(root, text = "HESAPLA", width = 20, command = Calculate)
 controlButton.config(font="bold")
 controlButton.place(x=40,y=250)
-
 
 
 root.mainloop()
