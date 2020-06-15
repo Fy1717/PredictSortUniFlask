@@ -1,6 +1,4 @@
 
-# -*- coding: utf-8 -*-
-
 # --------------- IMPORT ALL MODULES ------------------------------------------
 
 import tkinter as tk
@@ -87,16 +85,35 @@ def Calculate():
     
     # --------------- GET MAIN DATA FROM CSV FILE -----------------------------
 
+    
+    
     mainData = pd.read_csv("data.csv")
+    mainData.isnull().sum()
+    #mainData = mainData.dropna() 
+    mainData.drop(['BoşSütun1', 'BoşSütun2'], axis =1, inplace = True) 
+    
+    from sklearn.impute import SimpleImputer
+    
+    imputer = SimpleImputer(missing_values = np.NaN, strategy = 'mean', fill_value=None, verbose=0)
+    Data = mainData.iloc[:,0:5].values
+    print(Data)
+    
+    imputer = imputer.fit(Data[:,0:5])
+    Data[:,0:5] = imputer.transform(Data[:,0:5])
+    print(Data)
+    
+# --------------- MENTION FEATURES AND RESULT ATTRIBUTE -------------------
+        
+    
+    features = Data[:,0:5]
+    features = pd.DataFrame(data = features, index = range(19), columns=['Konum','AkademikYayinSayisi','AkademikYayinDerecesi','OgrenciSeviyesi','DersSaati'])
+    print(features)
+    
+    resultAttribute = mainData.sr
 
     # --------------- CALL RIDGE REGRESSION -----------------------------------
 
     reg = linear_model.Ridge()
-
-    # --------------- MENTION FEATURES AND RESULT ATTRIBUTE -------------------
-
-    features = mainData[["Konum", "AkademikYayinSayisi", "AkademikYayinDerecesi", "OgrenciSeviyesi", "DersSaati"]]
-    resultAttribute = mainData.sr
 
     # --------------- FITTING OPERATION WITH FEATURES AND RESULT ATTRIBUTE ----
 
