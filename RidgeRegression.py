@@ -8,21 +8,21 @@ from sklearn import linear_model
 
 # ------------------- MAIN FUNCTION -------------------------------------------
 
-def CalculateByRidge(locationPoint, broadcastingNumber, broadcastingDegree, studentDegree, lessonTime):
+def CalculateByRidge(location, article, articleLevel, studentLevel, lessonTime):
 
     # --------------- GET USER'S DATA FROM INTERFACE --------------------------
 
-    locationPoint = int(locationPoint)
-    broadcastingNumber = int(broadcastingNumber)
-    broadcastingDegree = int(broadcastingDegree)
-    studentDegree = int(studentDegree)
+    location = int(location)
+    article = int(article)
+    articleLevel = int(articleLevel)
+    studentLevel = int(studentLevel)
     lessonTime = int(lessonTime)
     
     # --------------- GET MAIN DATA FROM CSV FILE -----------------------------
 
     
     
-    mainData = pd.read_csv("C:/Users/furkanyildiz/Desktop/FY/FY-Home/RidgeForUniversities/data.csv")
+    mainData = pd.read_csv("C:/Users/furkanyildiz/Desktop/FY/FY-Home/RidgeForUniversities/Backend/data.csv")
     mainData.isnull().sum()
     mainData.drop(['BoşSütun1', 'BoşSütun2'], axis =1, inplace = True) 
     
@@ -52,7 +52,7 @@ def CalculateByRidge(locationPoint, broadcastingNumber, broadcastingDegree, stud
 
     # --------------- PREDICT OPERATION ---------------------------------------
 
-    testAttributes = [[locationPoint, broadcastingNumber, broadcastingDegree, studentDegree, lessonTime]]
+    testAttributes = [[location, article, articleLevel, studentLevel, lessonTime]]
     predictResult = reg.predict(testAttributes)
 
     return int(predictResult)

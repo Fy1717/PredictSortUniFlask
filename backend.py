@@ -1,10 +1,11 @@
 # !/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
+from msilib.schema import Error
 from flask import Flask, jsonify, request
 from RidgeRegression import CalculateByRidge
 
-#http://localhost:5000/calculate?locationPoint=9&broadcastingNumber=25&broadcastingDegree=3&studentDegree=9&lessonTime=35
+#http://localhost:5000/calculate?location=9&article=25&articleLevel=3&studentLevel=9&lessonTime=35
 
 app = Flask(__name__)
 
@@ -14,21 +15,29 @@ def mainPage():
 
 @app.route("/calculate", methods=["GET", "POST"])
 def calculate():
-    #print("XXXXXXXXXXXX")
+    print("XXXXXXXXXXXX")
 
+    
     if request.method == "POST":
-        locationPoint = request.args.get("locationPoint")
-        broadcastingNumber = request.args.get("broadcastingNumber")
-        broadcastingDegree = request.args.get("broadcastingDegree")
-        studentDegree = request.args.get("studentDegree")
-        lessonTime =  request.args.get("lessonTime")
+        try:
+            print("REQUEST JSON:", request.json)
 
-        resultFromRidge = CalculateByRidge(locationPoint, broadcastingNumber, broadcastingDegree, studentDegree, lessonTime)
-        print("RESULT FROM RIDGE: ", resultFromRidge)
+            location = request.json["location"]
+            article = request.json["article"]
+            articleLevel = request.json["articleLevel"]
+            studentLevel = request.json["studentLevel"]
+            lessonTime = request.json["lessonTime"]
+            
+            #print("LOCATION : ", location, " ARTICLE : ", article, " ARTICLE LEVEL : ", articleLevel, " STUDENT LEVEL : ", studentLevel, " LESSON TIME : ", lessonTime)
+        
+            resultFromRidge = CalculateByRidge(location, article, articleLevel, studentLevel, lessonTime)
+            #print("RESULT FROM RIDGE: ", resultFromRidge)
+        
+            return jsonify({"success": True, "result": resultFromRidge})
 
-        #print("\nLocationPoint: " + locationPoint + "\n" + "broadcastingNumber: " + broadcastingNumber + "\n" + "broadcastingDegree: " + broadcastingDegree + "\n" + "studentDegree: " + studentDegree + "\n" + "lessonTime: " + lessonTime)
-
-        return jsonify({"success": True, "result": resultFromRidge})
+        except Exception as e:
+            print("ERROR : ", e)
+            return jsonify({"success": False, "result": "resultFromRidge"})
     else:
         return jsonify({"success": False, "message": "GET method is not supported"})
     
