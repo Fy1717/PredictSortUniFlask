@@ -22,7 +22,7 @@ def CalculateByRidge(location, article, articleLevel, studentLevel, lessonTime):
 
     
     
-    mainData = pd.read_csv("C:/Users/furkanyildiz/Desktop/FY/FY-Home/RidgeForUniversities/Backend/data.csv")
+    mainData = pd.read_csv("D:/FY-Home/PredictSortUniFlask/data.csv")
     mainData.isnull().sum()
     mainData.drop(['BoşSütun1', 'BoşSütun2'], axis =1, inplace = True) 
     
